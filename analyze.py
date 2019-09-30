@@ -31,5 +31,15 @@ def process_tweet_object(tweet):
     output['in_reply_to_status_id_str'] = tweet.in_reply_to_status_id_str
     output['in_reply_user_id_str'] = tweet.in_reply_to_user_id_str
 
+    # author
+    output['auth_id'] = tweet.user.id_str
+    output['auth_screen_name'] = tweet.user.screen_name
+    output['auth_verified'] = tweet.user.verified
+    output['auth_followers_count'] = tweet.user.followers_count
+    output['auth_following_count'] = tweet.user.friends_count  # Note: We change it to followers
+    output['auth_favs_count'] = tweet.user.favourites_count
+    output['auth_statuses_count'] = tweet.user.statuses_count
+
+
     if hasattr(tweet, 'quoted_status_id_str'):
         output['quoted_status_id_str'] = tweet.quoted_status_id_str
