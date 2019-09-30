@@ -16,17 +16,23 @@ def setup_api():
 
 
 def process_tweet_object(tweet):
+    '''Process select Twitter API tweet object attribute values into a dict
+    :param tweet: https://developer.twitter.com/en/docs/tweets/data-dictionary/overview/tweet-object
+    :return: dict
+    '''
     output = dict()
 
     output['sceen_name'] = tweet.screen_name
+    # Convention: Will omit str on attribute name and default to always using str for attributes
     output['id'] = tweet.id_str
     output['created_at'] = tweet.created_at  # UTC time
     output['text'] = tweet.text.encode("utf-8")
     output['truncated'] = tweet.truncated
     output['source'] = tweet.source,  # client used to send
 
-    # tweet.coordinates,
-    # tweet.place
+    # TODO tweet.coordinates,
+    # TODO tweet.place
+
     output['in_reply_to_screen_name'] = tweet.in_reply_to_screen_name
     output['in_reply_to_status_id_str'] = tweet.in_reply_to_status_id_str
     output['in_reply_user_id_str'] = tweet.in_reply_to_user_id_str
@@ -40,6 +46,11 @@ def process_tweet_object(tweet):
     output['auth_favs_count'] = tweet.user.favourites_count
     output['auth_statuses_count'] = tweet.user.statuses_count
 
+    if tweet.is_quote_status:
+        output['quoted_status_id'] = tweet.quoted_status_id_str
+        # TODO quoted_status which contains object of original quoted tweet
 
-    if hasattr(tweet, 'quoted_status_id_str'):
-        output['quoted_status_id_str'] = tweet.quoted_status_id_str
+    # TODO retweeted_status
+    # TODO Entities which have been parsed out of the text of the Tweet. Additionally see Entities in Twitter Objects . Example:
+    # TODO extended_entities
+
