@@ -16,9 +16,38 @@ def setup_api():
 
 
 def get_tweet_obj(screen_name: str, api):
-    """Derivative of https://gist.github.com/brenorb/1ec2afb8d66af850acc294309b9e49ea"""
-    
+    """Credit: This is a derivative of https://gist.github.com/brenorb/1ec2afb8d66af850acc294309b9e49ea
+    Only return a list unmodified API objects
+    Twitter only allows access to a users most recent 3240 tweets with this method
 
+    Does not always get tweets for unknown reason:
+        Worse with the president's twitter account
+    """
+    # container for all tweepy tweet objects
+    tweets = list()
+
+    # initial request for most recent tweets (200 is the maximum allowed count)
+    next_tweets = api.user_timeline(screen_name=screen_name, count=200)
+    tweets.extend(next_tweets)
+    print("{} initial tweets downloaded".format(len(tweets)))
+
+    # save the id of the oldest tweet less one
+    oldest = tweets[-1].id - 1
+
+    # keep grabbing tweets until there are no tweets left to grab
+    while len(next_tweets) > 0:
+        print("getting tweets before {}".format(oldest))
+
+        # all subsequent requests use the max_id param to prevent duplicates
+        next_tweets = api.user_timeline(screen_name=screen_name, count=200, max_id=oldest)
+        tweets.extend(next_tweets)
+
+        # update the id of the oldest tweet less one
+        oldest = tweets[-1].id - 1
+
+        print("...{} tweets downloaded so far".format(len(tweets)))
+
+    return tweets
 
 
 def process_tweet_object(tweet):
