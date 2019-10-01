@@ -15,18 +15,24 @@ def setup_api():
     return api
 
 
+def get_tweet_obj(screen_name: str, api):
+    """Derivative of https://gist.github.com/brenorb/1ec2afb8d66af850acc294309b9e49ea"""
+    
+
+
+
 def process_tweet_object(tweet):
-    '''Process select Twitter API tweet object attribute values into a dict
+    """Process select Twitter API tweet object attribute values into a dict
     :param tweet: https://developer.twitter.com/en/docs/tweets/data-dictionary/overview/tweet-object
     :return: dict
-    '''
+    """
     output = dict()
 
     output['sceen_name'] = tweet.screen_name
     # Convention: Will omit str on attribute name and default to always using str for attributes
     output['id'] = tweet.id_str
     output['created_at'] = tweet.created_at  # UTC time
-    output['text'] = tweet.text.encode("utf-8")
+    output['text'] = tweet.text  # Try without utf encoding
     output['truncated'] = tweet.truncated
     output['source'] = tweet.source,  # client used to send
 
@@ -46,11 +52,28 @@ def process_tweet_object(tweet):
     output['auth_favs_count'] = tweet.user.favourites_count
     output['auth_statuses_count'] = tweet.user.statuses_count
 
-    if tweet.is_quote_status:
-        output['quoted_status_id'] = tweet.quoted_status_id_str
-        # TODO quoted_status which contains object of original quoted tweet
+    # Note: It's not "is_quoted_status" past tense
+    if tweet.is_quote_status or hasattr('retweeted_status', tweet):
+        # This likely requires more work as a RT can contain a quoted RT of a quoted RT and so on
 
-    # TODO retweeted_status
+        if tweet.is_quote_status:
+            output['quoted_status_id'] = tweet.quoted_status_id_str
+
+        # TODO retweeted_status
+        rt = tweet.retweeted_status
+        output['rt_sceen_name'] = rt.user.screen_name
+        # Convention: Will omit str on attribute name and default to always using str for attributes
+        output['rt_id'] = rt.id_str
+        output['rt_created_at'] = rt.created_at  # UTC time
+        output['rt_text'] = rt.text
+        output['rt_truncated'] = rt.truncated
+        output['rt_source'] = rt.source,  # client used to send
+        # TODO quoted_status which contains object of original quoted tweet
+        # Have case where is_quote_status is True but has retweeted_status instead of quoted_status
+        # Might make more sense to
+
+
     # TODO Entities which have been parsed out of the text of the Tweet. Additionally see Entities in Twitter Objects . Example:
     # TODO extended_entities
+    # TODO Test case where tweet is media, such as video or image and no text
 
