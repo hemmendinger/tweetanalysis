@@ -57,7 +57,7 @@ def process_tweet_object(tweet):
     """
     output = dict()
 
-    output['sceen_name'] = tweet.screen_name
+    output['screen_name'] = tweet.screen_name
     # Convention: Will omit str on attribute name and default to always using str for attributes
     output['id'] = tweet.id_str
     output['created_at'] = tweet.created_at  # UTC time
@@ -102,7 +102,7 @@ def process_tweet_object(tweet):
         # Might make more sense to
 
 
-    # TODO Entities which have been parsed out of the text of the Tweet. Additionally see Entities in Twitter Objects . Example:
+    # TODO "Entities which have been parsed out of the text of the Tweet. Additionally see Entities in Twitter Objects."
     # TODO extended_entities
     # TODO Test case where tweet is media, such as video or image and no text
 
