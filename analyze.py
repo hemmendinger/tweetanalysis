@@ -85,15 +85,9 @@ def process_tweet_object(tweet):
     output['auth_favs_count'] = tweet.user.favourites_count
     output['auth_tweet_count'] = tweet.user.statuses_count
 
-    # Note: It's not "is_quoted_status" past tense
+
     rt = None
-    if tweet.is_quote_status:
-        output['quoted_rt'] = True
-        rt = tweet.quoted_status
-
-    else:
-        output['quoted_rt'] = False
-
+    # TODO Order might matter for rt overwrites, verify
     if hasattr(tweet, 'retweeted_status'):
         # This could need more work as a RT can contain a quoted RT of a quoted RT and so on
         output['rt'] = True
@@ -101,28 +95,26 @@ def process_tweet_object(tweet):
     else:
         output['rt'] = False
 
-    if rt is not None:
-        output['rt_tweet_id'] = tweet.quoted_status_id_str
-        output['rt_screen_name'] = rt.author.screen_name
-        output['rt_created_at'] = rt.created_at
-        output['rt_text'] = rt.text
-        output['rt_truncated'] = rt.truncated
+    # Note: It's not "is_quoted_status" past tense
+    if tweet.is_quote_status:
+        if hasattr(tweet, 'quoted_status'):
+            output['quoted_rt'] = True
+            rt = tweet.quoted_status
+    else:
+        output['quoted_rt'] = False
 
-        #  output['rt_sceen_name'] = rt.user.screen_name
-        #
-        output['rt_id'] = rt.id_str
+    if rt is not None:
+        output['rt_tweet_id'] = rt.id_str
+        output['rt_auth_screen_name'] = rt.author.screen_name
+        output['rt_auth_id'] = rt.author.id_str
         output['rt_created_at'] = rt.created_at  # UTC time
         output['rt_text'] = rt.text
         output['rt_truncated'] = rt.truncated
         output['rt_source'] = rt.source,  # client used to send
-        # TODO quoted_status which contains object of original quoted tweet
-        # Have case where is_quote_status is True but has retweeted_status instead of quoted_status
-        # Might make more sense to
-
-
-
 
     # TODO "Entities which have been parsed out of the text of the Tweet. Additionally see Entities in Twitter Objects."
     # TODO extended_entities
-    # TODO Test case where tweet is media, such as video or image and no text
+
+    return output
+
 
