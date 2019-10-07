@@ -56,7 +56,7 @@ def process_tweet_object(tweet):
     """
     output = dict()
 
-    output['screen_name'] = tweet.screen_name
+    # mistake? output['screen_name'] = tweet.screen_name
     # Convention: Will omit str on attribute name and default to always using str for attributes
     output['id'] = tweet.id_str
     output['created_at'] = tweet.created_at  # UTC time
