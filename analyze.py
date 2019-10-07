@@ -61,19 +61,20 @@ def process_tweet_object(tweet):
 
     # TODO mistake? output['screen_name'] = tweet.screen_name
     # Convention: Will omit str on attribute name and default to always using str for attributes
+    output['screen_name'] = tweet.user.screen_name
     output['id'] = tweet.id_str
     output['created_at'] = tweet.created_at  # UTC time
     output['text'] = tweet.text  # Try without utf encoding
     output['truncated'] = tweet.truncated
     output['source'] = tweet.source,  # client used to send
 
-    # TODO tweet.coordinates
+    # TODO tweet.coordinates, tweet.place
     output['coordinates'] = False if tweet.coordinates is None else True
-    # TODO tweet.place
 
     output['in_reply_to_screen_name'] = tweet.in_reply_to_screen_name
     output['in_reply_to_tweet_id'] = tweet.in_reply_to_status_id_str
     output['in_reply_user_id'] = tweet.in_reply_to_user_id_str
+    # TODO Do we want reply text?
 
     # author
     output['auth_id'] = tweet.user.id_str
@@ -87,23 +88,28 @@ def process_tweet_object(tweet):
     # Note: It's not "is_quoted_status" past tense
     rt = None
     if tweet.is_quote_status:
-        tweet['quoted_rt'] = True
+        output['quoted_rt'] = True
         rt = tweet.quoted_status
+
+    else:
+        output['quoted_rt'] = False
+
+    if hasattr(tweet, 'retweeted_status'):
+        # This could need more work as a RT can contain a quoted RT of a quoted RT and so on
+        output['rt'] = True
+        rt = tweet.retweeted_status
+    else:
+        output['rt'] = False
+
+    if rt is not None:
         output['rt_tweet_id'] = tweet.quoted_status_id_str
         output['rt_screen_name'] = rt.author.screen_name
         output['rt_created_at'] = rt.created_at
         output['rt_text'] = rt.text
         output['rt_truncated'] = rt.truncated
-    else:
-        tweet['quoted_rt'] = False
 
-    if hasattr(tweet, 'retweeted_status'):
-        # This could need more work as a RT can contain a quoted RT of a quoted RT and so on
-        # TODO retweeted_status
-        tweet['rt'] = True
-        rt = tweet.retweeted_status
-        output['rt_sceen_name'] = rt.user.screen_name
-        # Convention: Will omit str on attribute name and default to always using str for attributes
+        #  output['rt_sceen_name'] = rt.user.screen_name
+        #
         output['rt_id'] = rt.id_str
         output['rt_created_at'] = rt.created_at  # UTC time
         output['rt_text'] = rt.text
