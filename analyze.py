@@ -51,6 +51,8 @@ def get_tweet_objects(screen_name: str, api):
 
 def process_tweet_object(tweet):
     """Process select Twitter API tweet object attribute values into a dict
+    For now, it seems easier to maintain if it is quoted RT, and treat all fields as rt_*
+
     :param tweet: https://developer.twitter.com/en/docs/tweets/data-dictionary/overview/tweet-object
     :return: dict
     """
@@ -81,13 +83,22 @@ def process_tweet_object(tweet):
     output['auth_statuses_count'] = tweet.user.statuses_count
 
     # Note: It's not "is_quoted_status" past tense
-    if tweet.is_quote_status or hasattr(tweet, 'retweeted_status'):
-        # This likely requires more work as a RT can contain a quoted RT of a quoted RT and so on
 
-        if tweet.is_quote_status:
-            output['quoted_status_id'] = tweet.quoted_status_id_str
+    if tweet.is_quote_status:
+        tweet['quoted_rt'] = True
+        rt = tweet.quoted_status
+        output['rt_status_id'] = tweet.quoted_status_id_str
+        output['rt_screen_name'] = rt.author.screen_name
+        output['rt_created_at'] = rt.created_at
+        output['rt_text'] = rt.text
+        output['rt_truncated'] = rt.truncated
+    else:
+        tweet['quoted_rt'] = False
 
+    if hasattr(tweet, 'retweeted_status'):
+        # This could need more work as a RT can contain a quoted RT of a quoted RT and so on
         # TODO retweeted_status
+        tweet['rt'] = True
         rt = tweet.retweeted_status
         output['rt_sceen_name'] = rt.user.screen_name
         # Convention: Will omit str on attribute name and default to always using str for attributes
@@ -99,6 +110,8 @@ def process_tweet_object(tweet):
         # TODO quoted_status which contains object of original quoted tweet
         # Have case where is_quote_status is True but has retweeted_status instead of quoted_status
         # Might make more sense to
+
+
 
 
     # TODO "Entities which have been parsed out of the text of the Tweet. Additionally see Entities in Twitter Objects."
