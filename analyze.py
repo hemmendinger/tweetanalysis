@@ -66,12 +66,13 @@ def process_tweet_object(tweet):
     output['truncated'] = tweet.truncated
     output['source'] = tweet.source,  # client used to send
 
-    # TODO tweet.coordinates,
+    # TODO tweet.coordinates
+    output['coordinates'] = False if tweet.coordinates is None else True
     # TODO tweet.place
 
     output['in_reply_to_screen_name'] = tweet.in_reply_to_screen_name
-    output['in_reply_to_status_id_str'] = tweet.in_reply_to_status_id_str
-    output['in_reply_user_id_str'] = tweet.in_reply_to_user_id_str
+    output['in_reply_to_status_id'] = tweet.in_reply_to_status_id_str
+    output['in_reply_user_id'] = tweet.in_reply_to_user_id_str
 
     # author
     output['auth_id'] = tweet.user.id_str
