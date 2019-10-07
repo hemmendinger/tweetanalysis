@@ -26,7 +26,10 @@ def get_tweet_objects(screen_name: str, api):
     tweets = list()
 
     # initial request for most recent tweets (200 is the maximum allowed count)
-    next_tweets = api.user_timeline(screen_name=screen_name, count=200)
+    next_tweets = api.user_timeline(screen_name=screen_name,
+                                    count=200,
+                                    tweet_mode='extended',
+                                    )
     tweets.extend(next_tweets)
     print("{} initial tweets downloaded".format(len(tweets)))
 
