@@ -56,7 +56,7 @@ def process_tweet_object(tweet):
     """
     output = dict()
 
-    # mistake? output['screen_name'] = tweet.screen_name
+    # TODO mistake? output['screen_name'] = tweet.screen_name
     # Convention: Will omit str on attribute name and default to always using str for attributes
     output['id'] = tweet.id_str
     output['created_at'] = tweet.created_at  # UTC time
@@ -81,7 +81,7 @@ def process_tweet_object(tweet):
     output['auth_statuses_count'] = tweet.user.statuses_count
 
     # Note: It's not "is_quoted_status" past tense
-    if tweet.is_quote_status or hasattr('retweeted_status', tweet):
+    if tweet.is_quote_status or hasattr(tweet, 'retweeted_status'):
         # This likely requires more work as a RT can contain a quoted RT of a quoted RT and so on
 
         if tweet.is_quote_status:
