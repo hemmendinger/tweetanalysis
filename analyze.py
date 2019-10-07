@@ -11,11 +11,10 @@ def setup_api():
                      retry_count=3,
                      retry_delay=3,
                      )
-
     return api
 
 
-def get_tweet_obj(screen_name: str, api):
+def get_tweet_objects(screen_name: str, api):
     """Credit: This is a derivative of https://gist.github.com/brenorb/1ec2afb8d66af850acc294309b9e49ea
     Only return a list unmodified API objects
     Twitter only allows access to a users most recent 3240 tweets with this method
