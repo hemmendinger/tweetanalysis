@@ -51,8 +51,9 @@ def get_tweet_objects(screen_name: str, api):
 
 def process_tweet_object(tweet):
     """Process select Twitter API tweet object attribute values into a dict
+    Many attributes are renamed to match how they are commonly described
     For now, it seems easier to maintain if it is quoted RT, and treat all fields as rt_*
-
+    This is a minimal viable processor which may not handle all cases elegantly.
     :param tweet: https://developer.twitter.com/en/docs/tweets/data-dictionary/overview/tweet-object
     :return: dict
     """
@@ -71,7 +72,7 @@ def process_tweet_object(tweet):
     # TODO tweet.place
 
     output['in_reply_to_screen_name'] = tweet.in_reply_to_screen_name
-    output['in_reply_to_status_id'] = tweet.in_reply_to_status_id_str
+    output['in_reply_to_tweet_id'] = tweet.in_reply_to_status_id_str
     output['in_reply_user_id'] = tweet.in_reply_to_user_id_str
 
     # author
@@ -81,14 +82,14 @@ def process_tweet_object(tweet):
     output['auth_followers_count'] = tweet.user.followers_count
     output['auth_following_count'] = tweet.user.friends_count  # Note: We change it to followers
     output['auth_favs_count'] = tweet.user.favourites_count
-    output['auth_statuses_count'] = tweet.user.statuses_count
+    output['auth_tweet_count'] = tweet.user.statuses_count
 
     # Note: It's not "is_quoted_status" past tense
-
+    rt = None
     if tweet.is_quote_status:
         tweet['quoted_rt'] = True
         rt = tweet.quoted_status
-        output['rt_status_id'] = tweet.quoted_status_id_str
+        output['rt_tweet_id'] = tweet.quoted_status_id_str
         output['rt_screen_name'] = rt.author.screen_name
         output['rt_created_at'] = rt.created_at
         output['rt_text'] = rt.text
