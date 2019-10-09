@@ -63,12 +63,14 @@ def process_tweet_object(tweet):
     output = dict()
 
     # TODO mistake? output['screen_name'] = tweet.screen_name
-    # Convention: Will omit str on attribute name and default to always using str for attributes
+    # Convention: Will omit str on attribute name and default to always using str for those attributes
     output['screen_name'] = tweet.user.screen_name
     output['id'] = tweet.id_str
     output['created_at'] = tweet.created_at  # UTC time
-    output['text'] = tweet.text  # Try without utf encoding
+    # Sometimes a tweet is truncated for no apparent reason
     output['truncated'] = tweet.truncated
+    output['text'] = tweet.text if output['truncated'] else tweet.full_text  # Try without utf encoding
+
     output['source'] = tweet.source,  # client used to send
 
     # TODO tweet.coordinates, tweet.place
@@ -111,13 +113,15 @@ def process_tweet_object(tweet):
         output['rt_auth_screen_name'] = rt.author.screen_name
         output['rt_auth_id'] = rt.author.id_str
         output['rt_created_at'] = rt.created_at  # UTC time
-        output['rt_text'] = rt.text
         output['rt_truncated'] = rt.truncated
+        output['rt_text'] = rt.text if rt.truncated else rt.full_text
         output['rt_source'] = rt.source,  # client used to send
 
     # TODO "Entities which have been parsed out of the text of the Tweet. Additionally see Entities in Twitter Objects."
     # TODO extended_entities
 
     return output
+
+
 
 
