@@ -1,6 +1,6 @@
 import tweepy
 import os
-
+import pandas as pd
 
 def setup_api():
     auth = tweepy.OAuthHandler(os.getenv('TWITTER_CONSUMER_KEY'), os.getenv('TWITTER_CONSUMER_SECRET'))
@@ -142,7 +142,10 @@ def process_tweet_object(tweet):
     return output
 
 
-def prepare_tweets(tweetobjects):
+def tweets_as_time_series(tweetobjects):
     tweets = [process_tweet_object(x) for x in tweetobjects]
+    df = pd.DataFrame(tweets)
+
+
 
 
