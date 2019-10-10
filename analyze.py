@@ -121,9 +121,21 @@ def process_tweet_object(tweet):
         output['rt_auth_screen_name'] = rt.author.screen_name
         output['rt_auth_id'] = rt.author.id_str
         output['rt_created_at'] = rt.created_at  # UTC time
-        output['rt_truncated'] = rt.truncated
-        output['rt_text'] = rt.text if rt.truncated else rt.full_text
         output['rt_source'] = rt.source,  # client used to send
+
+
+        #output['rt_text'] = rt.text if rt.truncated else rt.full_text
+
+        output['rt_truncated'] = rt.truncated
+        # Try without utf encoding
+        if rt.truncated:
+            output['rt_text'] = rt.text
+        else:
+            if hasattr(rt, 'full_text'):
+                output['rt_text'] = rt.full_text
+            else:
+                output['rt_text'] = rt.text
+
 
     # TODO "Entities which have been parsed out of the text of the Tweet. Additionally see Entities in Twitter Objects."
     # TODO extended_entities
