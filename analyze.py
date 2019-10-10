@@ -67,11 +67,19 @@ def process_tweet_object(tweet):
     output['screen_name'] = tweet.user.screen_name
     output['id'] = tweet.id_str
     output['created_at'] = tweet.created_at  # UTC time
-    # Sometimes a tweet is truncated for no apparent reason
-    output['truncated'] = tweet.truncated
-    output['text'] = tweet.text if output['truncated'] else tweet.full_text  # Try without utf encoding
-
     output['source'] = tweet.source,  # client used to send
+
+    # Sometimes a tweet is truncated for no apparent reason
+    # Sometimes a tweet is NOT truncated but uses .text, maybe because it is under 140 characters
+    output['truncated'] = tweet.truncated
+    # Try without utf encoding
+    if tweet.truncated:
+        output['text'] = tweet.text
+    else:
+        if hasattr(tweet, 'full_text'):
+            output['text'] = tweet.full_text
+        else:
+            output['text'] = tweet.text
 
     # TODO tweet.coordinates, tweet.place
     output['coordinates'] = False if tweet.coordinates is None else True
