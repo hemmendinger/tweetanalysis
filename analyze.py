@@ -120,12 +120,11 @@ def process_tweet_object(tweet):
         output['rt_tweet_id'] = rt.id_str
         output['rt_auth_screen_name'] = rt.author.screen_name
         output['rt_auth_id'] = rt.author.id_str
+        output['rt_auth_verified'] = rt.author.verified
         output['rt_created_at'] = rt.created_at  # UTC time
         output['rt_source'] = rt.source,  # client used to send
 
-
-        #output['rt_text'] = rt.text if rt.truncated else rt.full_text
-
+        # see previous comments about text, full_text issues
         output['rt_truncated'] = rt.truncated
         # Try without utf encoding
         if rt.truncated:
@@ -143,5 +142,7 @@ def process_tweet_object(tweet):
     return output
 
 
+def prepare_tweets(tweetobjects):
+    tweets = [process_tweet_object(x) for x in tweetobjects]
 
 
