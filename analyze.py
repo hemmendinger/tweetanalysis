@@ -14,7 +14,7 @@ def setup_api():
     return api
 
 
-def get_tweet_objects(screen_name: str, api):
+def get_tweet_objects(screen_name: str, api: tweepy.api):
     """Credit: This is a derivative of https://gist.github.com/brenorb/1ec2afb8d66af850acc294309b9e49ea
     Only return a list unmodified API objects
     Twitter only allows access to a users most recent 3240 tweets with this method
@@ -52,7 +52,7 @@ def get_tweet_objects(screen_name: str, api):
     return tweets
 
 
-def process_tweet_object(tweet):
+def process_tweet_object(tweet: tweepy.models.Status):
     """Process select Twitter API tweet object attribute values into a dict
     Many attributes are renamed to match how they are commonly described
     For now, it seems easier to maintain if it is quoted RT, and treat all fields as rt_*
@@ -142,7 +142,7 @@ def process_tweet_object(tweet):
     return output
 
 
-def tweets_as_time_series(tweetobjects):
+def tweets_as_time_series(tweetobjects: list):
     tweets = [process_tweet_object(x) for x in tweetobjects]
     df = pd.DataFrame(tweets)
     df = df.set_index('created_at')
@@ -151,7 +151,8 @@ def tweets_as_time_series(tweetobjects):
 
     return df
 
-def tweets_per_day(df):
+
+def tweets_per_day(df: pd.DataFrame):
     return df.groupby(df.index.date).count()
 
 
