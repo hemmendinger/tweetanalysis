@@ -148,7 +148,11 @@ def tweets_as_time_series(tweetobjects):
     df = df.set_index('created_at')
     df = df.tz_localize('UTC')
     df = df.tz_convert('America/New_York')
-    
+
+    return df
+
+def tweets_per_day(df):
+    return df.groupby(df.index.date).count()
 
 
 
