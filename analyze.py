@@ -142,7 +142,7 @@ def process_tweet_object(tweet: tweepy.models.Status):
     return output
 
 
-def tweets_as_time_series(tweetobjects: list):
+def tweetobjs_as_time_series(tweetobjects: list):
     tweets = [process_tweet_object(x) for x in tweetobjects]
     df = pd.DataFrame(tweets)
     df = df.set_index('created_at')
