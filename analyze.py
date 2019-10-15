@@ -156,4 +156,10 @@ def tweets_per_day(df: pd.DataFrame):
     return df.groupby(df.index.date).count()
 
 
+def tweets_on_day(df: pd.DataFrame, day: str):
+    df = df.index.day_name()
+    is_day = df['day'] == day
+    return df[is_day]
+
+
 
