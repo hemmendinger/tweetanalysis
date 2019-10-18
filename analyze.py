@@ -162,4 +162,14 @@ def tweets_on_day(df: pd.DataFrame, day: str):
     return df[is_day]
 
 
+def tweets_before_noon_on_date():
+    pass
+
+
+def get_new_tweets(tweets):
+    """A function that only fetches new tweets relative to current data"""
+    pass
+
+
+
 
