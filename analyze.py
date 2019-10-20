@@ -162,6 +162,17 @@ def tweets_on_day(df: pd.DataFrame, day: str):
     return df[is_day]
 
 
+def tweets_days_of_week(df: pd.DataFrame):
+
+    days = {'Sunday': None,
+            'Monday': None,
+            'Tuesday': None,
+            'Wednesday': None,
+            'Thursday': None,
+            'Friday': None,
+            'Saturday': None}
+
+
 def tweets_before_noon_on_date():
     pass
 
