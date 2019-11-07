@@ -149,6 +149,8 @@ def tweetobjs_as_time_series(tweetobjects: list):
     df = df.tz_localize('UTC')
     df = df.tz_convert('America/New_York')
 
+    df['day'] = df.index.day_name()
+
     return df
 
 
