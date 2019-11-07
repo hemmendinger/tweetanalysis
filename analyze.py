@@ -1,3 +1,4 @@
+import pickle
 import tweepy
 import os
 import pandas as pd
@@ -182,6 +183,27 @@ def tweets_before_noon_on_date():
 def get_new_tweets(tweets):
     """A function that only fetches new tweets relative to current data"""
     pass
+
+
+def combine_tweets(twt1: pd.DataFrame, twt2: pd.DataFrame):
+    """Combine two lists of returned tweepy API objects
+    """
+
+def workflow(file1: pickle, file2: pickle):
+
+    with open(file1, 'rb') as f:
+        tweets1 = pickle.load(f)
+
+    with open(file2, 'rb') as f:
+        tweets2 = pickle.load(f)
+
+    tweets1 = tweetobjs_as_time_series(tweets1)
+    tweets2 = tweetobjs_as_time_series(tweets2)
+
+    return tweets1, tweets2
+
+
+
 
 
 
